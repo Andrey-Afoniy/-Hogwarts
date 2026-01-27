@@ -63,6 +63,4 @@ public class StudentController {
         }
         return ResponseEntity.ok(students);
     }
-
-
 }
