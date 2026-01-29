@@ -3,6 +3,7 @@ package ru.hogwarts.school.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.List;
@@ -52,8 +53,16 @@ public class FacultyService {
         return facultyRepository.findByColor(color);
     }
 
-    // Дополнительный метод для поиска по имени или цвету
     public List<Faculty> getFacultiesByNameOrColor(String name, String color) {
         return facultyRepository.findByNameContainingIgnoreCaseOrColorContainingIgnoreCase(name, color);
+    }
+
+    public List<Faculty> searchFaculties(String searchTerm) {
+        return facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(searchTerm, searchTerm);
+    }
+
+    public List<Student> getFacultyStudents(Long facultyId) {
+        Optional<Faculty> faculty = facultyRepository.findById(facultyId);
+        return faculty.map(Faculty::getStudents).orElse(null);
     }
 }

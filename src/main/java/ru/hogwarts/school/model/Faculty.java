@@ -1,7 +1,7 @@
 package ru.hogwarts.school.model;
 
 import javax.persistence.*;
-import java.util.Objects;
+import java.util.List;
 
 @Entity
 @Table(name = "faculties")
@@ -16,6 +16,9 @@ public class Faculty {
     @Column(name = "color", nullable = false)
     private String color;
 
+    @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY)
+    private List<Student> students;
+
     public Faculty() {
     }
 
@@ -24,7 +27,6 @@ public class Faculty {
         this.name = name;
         this.color = color;
     }
-
 
     public Long getId() {
         return id;
@@ -50,17 +52,12 @@ public class Faculty {
         this.color = color;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Faculty faculty = (Faculty) o;
-        return Objects.equals(id, faculty.id) && Objects.equals(name, faculty.name) && Objects.equals(color, faculty.color);
+    public List<Student> getStudents() {
+        return students;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, color);
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
 
     @Override
@@ -69,6 +66,7 @@ public class Faculty {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", color='" + color + '\'' +
+                ", studentsCount=" + (students != null ? students.size() : 0) +
                 '}';
     }
 }
