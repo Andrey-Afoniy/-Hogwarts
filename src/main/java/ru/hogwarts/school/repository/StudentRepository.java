@@ -1,13 +1,44 @@
 package ru.hogwarts.school.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import ru.hogwarts.school.model.Student;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
-    List<Student> findByAge(int age);
-    List<Student> findByAgeBetween(int minAge, int maxAge);
-    List<Student> findByNameContainingIgnoreCase(String name);
-    List<Student> findByFacultyId(Long facultyId);
+
+    Collection<Student> findByAge(int age);
+
+    Collection<Student> findByAgeBetween(int minAge, int maxAge);
+
+    Collection<Student> findByFacultyId(Long facultyId);
+
+    Collection<Student> findByNameIgnoreCase(String name);
+
+    Collection<Student> findByNameContainingIgnoreCase(String namePart);
+
+    Collection<Student> findByFacultyIsNull();
+
+    List<Student> findTop5ByOrderByIdDesc();
+
+    // 1. Получить количество всех студентов в школе
+    @Query("SELECT COUNT(s) FROM Student s")
+    Long countAllStudents();
+
+    // 2. Получить средний возраст студентов
+    @Query("SELECT AVG(s.age) FROM Student s")
+    Double findAverageAge();
+
+    // 3. Получить 5 последних студентов (native query для PostgreSQL)
+    @Query(value = "SELECT * FROM students ORDER BY id DESC LIMIT 5", nativeQuery = true)
+    List<Student> findLastFiveStudents();
+
+    @Query("SELECT s FROM Student s WHERE s.age > :age ORDER BY s.age DESC")
+    List<Student> findStudentsOlderThan(@Param("age") int age);
+
+    @Query("SELECT COUNT(s) FROM Student s WHERE s.faculty.id = :facultyId")
+    Long countStudentsByFacultyId(@Param("facultyId") Long facultyId);
 }

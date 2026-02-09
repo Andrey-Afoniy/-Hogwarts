@@ -1,6 +1,7 @@
 package ru.hogwarts.school.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "students")
@@ -15,7 +16,10 @@ public class Student {
     @Column(name = "age", nullable = false)
     private int age;
 
-    @ManyToOne
+    @Column(name = "email", unique = true)
+    private String email;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "faculty_id")
     private Faculty faculty;
 
@@ -28,11 +32,11 @@ public class Student {
         this.age = age;
     }
 
-    public Student(Long id, String name, int age, Faculty faculty) {
+    public Student(Long id, String name, int age, String email) {
         this.id = id;
         this.name = name;
         this.age = age;
-        this.faculty = faculty;
+        this.email = email;
     }
 
     public Long getId() {
@@ -59,6 +63,14 @@ public class Student {
         this.age = age;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public Faculty getFaculty() {
         return faculty;
     }
@@ -68,12 +80,25 @@ public class Student {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Student student = (Student) o;
+        return age == student.age && Objects.equals(id, student.id) && Objects.equals(name, student.name) && Objects.equals(email, student.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, age, email);
+    }
+
+    @Override
     public String toString() {
         return "Student{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", age=" + age +
-                ", faculty=" + (faculty != null ? faculty.getName() : "null") +
+                ", email='" + email + '\'' +
                 '}';
     }
 }

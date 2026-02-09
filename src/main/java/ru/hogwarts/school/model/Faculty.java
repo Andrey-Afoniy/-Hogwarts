@@ -1,7 +1,10 @@
 package ru.hogwarts.school.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "faculties")
@@ -10,14 +13,19 @@ public class Faculty {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @Column(name = "color", nullable = false)
     private String color;
 
-    @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "faculty", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Student> students;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "dean_id", referencedColumnName = "id")
+    private Avatar deanAvatar;
 
     public Faculty() {
     }
@@ -60,13 +68,35 @@ public class Faculty {
         this.students = students;
     }
 
+    public Avatar getDeanAvatar() {
+        return deanAvatar;
+    }
+
+    public void setDeanAvatar(Avatar deanAvatar) {
+        this.deanAvatar = deanAvatar;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Faculty faculty = (Faculty) o;
+        return Objects.equals(id, faculty.id) &&
+                Objects.equals(name, faculty.name) &&
+                Objects.equals(color, faculty.color);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, color);
+    }
+
     @Override
     public String toString() {
         return "Faculty{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", color='" + color + '\'' +
-                ", studentsCount=" + (students != null ? students.size() : 0) +
                 '}';
     }
 }

@@ -218,4 +218,7 @@ class FacultyControllerWebMvcTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/faculty/999/students"))
                 .andExpect(status().isNotFound());
     }
+    public Faculty getFacultyById(Long id) {
+        return findFaculty(id);
+    }
 }
