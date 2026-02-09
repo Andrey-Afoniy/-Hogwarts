@@ -94,7 +94,6 @@ public class StudentController {
         return ResponseEntity.ok(students);
     }
 
-    // Требуемые эндпоинты с использованием @Query
 
     @GetMapping("/last-five")
     public ResponseEntity<List<Student>> getLastFiveStudents() {

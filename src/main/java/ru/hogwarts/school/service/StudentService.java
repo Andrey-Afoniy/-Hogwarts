@@ -93,7 +93,6 @@ public class StudentService {
         return studentRepository.findByNameContainingIgnoreCase(name);
     }
 
-    // Методы с использованием @Query
 
     public List<Student> getLastFiveStudents() {
         return studentRepository.findTop5ByOrderByIdDesc();

@@ -37,7 +37,6 @@ public class AvatarService {
         avatarRepository.deleteById(id);
     }
 
-    // Методы для работы с пагинацией
 
     public Page<Avatar> getAllAvatars(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);

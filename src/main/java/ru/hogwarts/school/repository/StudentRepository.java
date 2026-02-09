@@ -24,15 +24,12 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     List<Student> findTop5ByOrderByIdDesc();
 
-    // 1. Получить количество всех студентов в школе
     @Query("SELECT COUNT(s) FROM Student s")
     Long countAllStudents();
 
-    // 2. Получить средний возраст студентов
     @Query("SELECT AVG(s.age) FROM Student s")
     Double findAverageAge();
 
-    // 3. Получить 5 последних студентов (native query для PostgreSQL)
     @Query(value = "SELECT * FROM students ORDER BY id DESC LIMIT 5", nativeQuery = true)
     List<Student> findLastFiveStudents();
 

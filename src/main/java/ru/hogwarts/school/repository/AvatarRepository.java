@@ -11,7 +11,6 @@ public interface AvatarRepository extends JpaRepository<Avatar, Long> {
 
     Optional<Avatar> findByStudentId(Long studentId);
 
-    // Пагинация для аватаров - обязательный метод для задания
     Page<Avatar> findAll(Pageable pageable);
 
     Page<Avatar> findByMediaType(String mediaType, Pageable pageable);

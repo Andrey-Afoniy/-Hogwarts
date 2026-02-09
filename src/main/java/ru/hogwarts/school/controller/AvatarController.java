@@ -51,7 +51,6 @@ public class AvatarController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    // Эндпоинты с пагинацией - обязательный для задания
 
     @GetMapping("/all")
     public ResponseEntity<Page<Avatar>> getAllAvatars(

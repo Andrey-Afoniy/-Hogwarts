@@ -24,7 +24,6 @@ public class FacultyService {
         return facultyRepository.save(faculty);
     }
 
-    // Этот метод называется findFaculty, а не getFacultyById
     public Faculty findFaculty(Long id) {
         Optional<Faculty> faculty = facultyRepository.findById(id);
         return faculty.orElse(null);

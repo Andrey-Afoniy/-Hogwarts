@@ -26,7 +26,7 @@ public class TestDataInitializer {
         return args -> {
             System.out.println("Инициализация тестовых данных...");
 
-            // Создаем факультеты
+
             Faculty gryffindor = new Faculty(null, "Гриффиндор", "красный");
             Faculty slytherin = new Faculty(null, "Слизерин", "зеленый");
             Faculty ravenclaw = new Faculty(null, "Когтевран", "синий");
@@ -34,7 +34,7 @@ public class TestDataInitializer {
 
             facultyRepository.saveAll(Arrays.asList(gryffindor, slytherin, ravenclaw, hufflepuff));
 
-            // Создаем студентов
+
             Student harry = new Student(null, "Гарри Поттер", 17, "harry.potter@hogwarts.com");
             harry.setFaculty(gryffindor);
 
@@ -61,7 +61,7 @@ public class TestDataInitializer {
 
             studentRepository.saveAll(Arrays.asList(harry, hermione, ron, draco, luna, cedric, neville, ginny));
 
-            // Создаем аватары
+
             Avatar harryAvatar = new Avatar(null, "/avatars/harry.jpg", 102400L, "image/jpeg");
             Avatar hermioneAvatar = new Avatar(null, "/avatars/hermione.jpg", 98304L, "image/jpeg");
             Avatar ronAvatar = new Avatar(null, "/avatars/ron.jpg", 105000L, "image/jpeg");
