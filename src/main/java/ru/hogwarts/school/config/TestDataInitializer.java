@@ -24,17 +24,14 @@ public class TestDataInitializer {
             AvatarRepository avatarRepository) {
 
         return args -> {
-            System.out.println("Инициализация тестовых данных...");
-
-
-            Faculty gryffindor = new Faculty(null, "Гриффиндор", "красный");
-            Faculty slytherin = new Faculty(null, "Слизерин", "зеленый");
-            Faculty ravenclaw = new Faculty(null, "Когтевран", "синий");
-            Faculty hufflepuff = new Faculty(null, "Пуффендуй", "желтый");
+            Faculty gryffindor = new Faculty("Гриффиндор", "красный");
+            Faculty slytherin = new Faculty("Слизерин", "зеленый");
+            Faculty ravenclaw = new Faculty("Когтевран", "синий");
+            Faculty hufflepuff = new Faculty("Пуффендуй", "желтый");
 
             facultyRepository.saveAll(Arrays.asList(gryffindor, slytherin, ravenclaw, hufflepuff));
 
-
+            // Создаем студентов (используем конструктор с 4 параметрами)
             Student harry = new Student(null, "Гарри Поттер", 17, "harry.potter@hogwarts.com");
             harry.setFaculty(gryffindor);
 
@@ -59,27 +56,44 @@ public class TestDataInitializer {
             Student ginny = new Student(null, "Джинни Уизли", 16, "ginny.weasley@hogwarts.com");
             ginny.setFaculty(gryffindor);
 
-            studentRepository.saveAll(Arrays.asList(harry, hermione, ron, draco, luna, cedric, neville, ginny));
+            Student fred = new Student(null, "Фред Уизли", 18, "fred.weasley@hogwarts.com");
+            fred.setFaculty(gryffindor);
 
+            Student george = new Student(null, "Джордж Уизли", 18, "george.weasley@hogwarts.com");
+            george.setFaculty(gryffindor);
 
-            Avatar harryAvatar = new Avatar(null, "/avatars/harry.jpg", 102400L, "image/jpeg");
-            Avatar hermioneAvatar = new Avatar(null, "/avatars/hermione.jpg", 98304L, "image/jpeg");
-            Avatar ronAvatar = new Avatar(null, "/avatars/ron.jpg", 105000L, "image/jpeg");
-            Avatar dracoAvatar = new Avatar(null, "/avatars/draco.jpg", 95000L, "image/jpeg");
-            Avatar lunaAvatar = new Avatar(null, "/avatars/luna.jpg", 89000L, "image/jpeg");
-            Avatar cedricAvatar = new Avatar(null, "/avatars/cedric.jpg", 92000L, "image/jpeg");
-            Avatar nevilleAvatar = new Avatar(null, "/avatars/neville.jpg", 87000L, "image/jpeg");
-            Avatar ginnyAvatar = new Avatar(null, "/avatars/ginny.jpg", 91000L, "image/jpeg");
-
-            avatarRepository.saveAll(Arrays.asList(
-                    harryAvatar, hermioneAvatar, ronAvatar, dracoAvatar,
-                    lunaAvatar, cedricAvatar, nevilleAvatar, ginnyAvatar
+            studentRepository.saveAll(Arrays.asList(
+                    harry, hermione, ron, draco, luna, cedric, neville, ginny, fred, george
             ));
 
-            System.out.println("Тестовые данные успешно инициализированы!");
-            System.out.println("Создано студентов: " + studentRepository.count());
-            System.out.println("Создано факультетов: " + facultyRepository.count());
-            System.out.println("Создано аватаров: " + avatarRepository.count());
+            Avatar harryAvatar = new Avatar("/avatars/harry.jpg", 102400L, "image/jpeg");
+            harryAvatar.setStudent(harry);
+
+            Avatar hermioneAvatar = new Avatar("/avatars/hermione.jpg", 98304L, "image/jpeg");
+            hermioneAvatar.setStudent(hermione);
+
+            Avatar ronAvatar = new Avatar("/avatars/ron.jpg", 105000L, "image/jpeg");
+            ronAvatar.setStudent(ron);
+
+            Avatar dracoAvatar = new Avatar("/avatars/draco.jpg", 95000L, "image/jpeg");
+            dracoAvatar.setStudent(draco);
+
+            Avatar lunaAvatar = new Avatar("/avatars/luna.jpg", 89000L, "image/jpeg");
+            lunaAvatar.setStudent(luna);
+
+            avatarRepository.saveAll(Arrays.asList(
+                    harryAvatar, hermioneAvatar, ronAvatar, dracoAvatar, lunaAvatar
+            ));
+
+            for (int i = 1; i <= 10; i++) {
+                Avatar avatar = new Avatar("/avatars/avatar" + i + ".jpg", 100000L + i * 1000, "image/jpeg");
+                avatarRepository.save(avatar);
+            }
+
+            System.out.println("Тестовые данные инициализированы:");
+            System.out.println("Студентов: " + studentRepository.count());
+            System.out.println("Факультетов: " + facultyRepository.count());
+            System.out.println("Аватаров: " + avatarRepository.count());
         };
     }
 }

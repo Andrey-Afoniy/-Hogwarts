@@ -12,8 +12,4 @@ public interface AvatarRepository extends JpaRepository<Avatar, Long> {
     Optional<Avatar> findByStudentId(Long studentId);
 
     Page<Avatar> findAll(Pageable pageable);
-
-    Page<Avatar> findByMediaType(String mediaType, Pageable pageable);
-
-    Page<Avatar> findByFileSizeGreaterThan(Long minSize, Pageable pageable);
 }

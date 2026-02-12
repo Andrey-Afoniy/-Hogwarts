@@ -16,14 +16,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     Collection<Student> findByFacultyId(Long facultyId);
 
-    Collection<Student> findByNameIgnoreCase(String name);
-
-    Collection<Student> findByNameContainingIgnoreCase(String namePart);
-
-    Collection<Student> findByFacultyIsNull();
-
-    List<Student> findTop5ByOrderByIdDesc();
-
     @Query("SELECT COUNT(s) FROM Student s")
     Long countAllStudents();
 
@@ -33,9 +25,11 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query(value = "SELECT * FROM students ORDER BY id DESC LIMIT 5", nativeQuery = true)
     List<Student> findLastFiveStudents();
 
-    @Query("SELECT s FROM Student s WHERE s.age > :age ORDER BY s.age DESC")
+    @Query("SELECT s FROM Student s WHERE s.age > :age")
     List<Student> findStudentsOlderThan(@Param("age") int age);
 
     @Query("SELECT COUNT(s) FROM Student s WHERE s.faculty.id = :facultyId")
     Long countStudentsByFacultyId(@Param("facultyId") Long facultyId);
+
+    Student findByEmail(String email);
 }

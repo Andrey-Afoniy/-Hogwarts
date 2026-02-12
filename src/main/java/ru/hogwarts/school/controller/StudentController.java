@@ -21,8 +21,12 @@ public class StudentController {
 
     @PostMapping
     public ResponseEntity<Student> createStudent(@RequestBody Student student) {
-        Student createdStudent = studentService.createStudent(student);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdStudent);
+        try {
+            Student createdStudent = studentService.createStudent(student);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdStudent);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @GetMapping("/{id}")
@@ -77,33 +81,9 @@ public class StudentController {
         return ResponseEntity.ok(students);
     }
 
-    @PutMapping("/{studentId}/assign-faculty/{facultyId}")
-    public ResponseEntity<Student> assignFacultyToStudent(
-            @PathVariable Long studentId,
-            @PathVariable Long facultyId) {
-        Student student = studentService.assignFacultyToStudent(studentId, facultyId);
-        if (student == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.ok(student);
-    }
-
-    @GetMapping("/filter/name")
-    public ResponseEntity<Collection<Student>> findStudentsByName(@RequestParam String name) {
-        Collection<Student> students = studentService.findStudentsByName(name);
-        return ResponseEntity.ok(students);
-    }
-
-
     @GetMapping("/last-five")
     public ResponseEntity<List<Student>> getLastFiveStudents() {
         List<Student> students = studentService.getLastFiveStudents();
-        return ResponseEntity.ok(students);
-    }
-
-    @GetMapping("/last-five-native")
-    public ResponseEntity<List<Student>> getLastFiveStudentsNative() {
-        List<Student> students = studentService.getLastFiveStudentsNative();
         return ResponseEntity.ok(students);
     }
 
@@ -128,12 +108,6 @@ public class StudentController {
     @GetMapping("/older-than/{age}")
     public ResponseEntity<List<Student>> getStudentsOlderThan(@PathVariable int age) {
         List<Student> students = studentService.getStudentsOlderThan(age);
-        return ResponseEntity.ok(students);
-    }
-
-    @GetMapping("/without-faculty")
-    public ResponseEntity<Collection<Student>> getStudentsWithoutFaculty() {
-        Collection<Student> students = studentService.getStudentsWithoutFaculty();
         return ResponseEntity.ok(students);
     }
 }

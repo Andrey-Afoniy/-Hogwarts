@@ -2,53 +2,50 @@ package ru.hogwarts.school.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
-import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Service
-@Transactional
 public class StudentService {
 
     private final StudentRepository studentRepository;
-    private final FacultyRepository facultyRepository;
 
     @Autowired
-    public StudentService(StudentRepository studentRepository, FacultyRepository facultyRepository) {
+    public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
-        this.facultyRepository = facultyRepository;
     }
 
     public Student createStudent(Student student) {
+        if (student.getEmail() != null && !student.getEmail().isEmpty()) {
+            Student existingStudent = studentRepository.findByEmail(student.getEmail());
+            if (existingStudent != null) {
+                throw new IllegalArgumentException("Студент с email " + student.getEmail() + " уже существует");
+            }
+        }
         return studentRepository.save(student);
     }
 
     public Student findStudent(Long id) {
-        Optional<Student> student = studentRepository.findById(id);
-        return student.orElse(null);
+        return studentRepository.findById(id).orElse(null);
     }
 
     public Student updateStudent(Long id, Student student) {
-        if (!studentRepository.existsById(id)) {
-            return null;
+        if (studentRepository.existsById(id)) {
+            student.setId(id);
+            return studentRepository.save(student);
         }
-        student.setId(id);
-        return studentRepository.save(student);
+        return null;
     }
 
     public Student deleteStudent(Long id) {
-        Optional<Student> student = studentRepository.findById(id);
-        if (student.isPresent()) {
+        Student student = findStudent(id);
+        if (student != null) {
             studentRepository.deleteById(id);
-            return student.get();
         }
-        return null;
+        return student;
     }
 
     public Collection<Student> getAllStudents() {
@@ -67,40 +64,10 @@ public class StudentService {
         return studentRepository.findByFacultyId(facultyId);
     }
 
-    public Student assignFacultyToStudent(Long studentId, Long facultyId) {
-        Optional<Student> studentOpt = studentRepository.findById(studentId);
-        Optional<Faculty> facultyOpt = facultyRepository.findById(facultyId);
-
-        if (studentOpt.isPresent() && facultyOpt.isPresent()) {
-            Student student = studentOpt.get();
-            student.setFaculty(facultyOpt.get());
-            return studentRepository.save(student);
-        }
-        return null;
-    }
-
-    public Student removeFacultyFromStudent(Long studentId) {
-        Optional<Student> studentOpt = studentRepository.findById(studentId);
-        if (studentOpt.isPresent()) {
-            Student student = studentOpt.get();
-            student.setFaculty(null);
-            return studentRepository.save(student);
-        }
-        return null;
-    }
-
-    public Collection<Student> findStudentsByName(String name) {
-        return studentRepository.findByNameContainingIgnoreCase(name);
-    }
-
-
     public List<Student> getLastFiveStudents() {
-        return studentRepository.findTop5ByOrderByIdDesc();
-    }
-
-    public List<Student> getLastFiveStudentsNative() {
         return studentRepository.findLastFiveStudents();
     }
+
 
     public Long countAllStudents() {
         Long count = studentRepository.countAllStudents();
@@ -119,9 +86,5 @@ public class StudentService {
 
     public List<Student> getStudentsOlderThan(int age) {
         return studentRepository.findStudentsOlderThan(age);
-    }
-
-    public Collection<Student> getStudentsWithoutFaculty() {
-        return studentRepository.findByFacultyIsNull();
     }
 }

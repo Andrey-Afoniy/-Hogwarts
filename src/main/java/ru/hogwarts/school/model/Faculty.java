@@ -1,37 +1,32 @@
 package ru.hogwarts.school.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "faculties")
+@Table(name = "faculties",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"name", "color"}))
 public class Faculty {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "color", nullable = false)
     private String color;
-
-    @OneToMany(mappedBy = "faculty", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Student> students;
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "dean_id", referencedColumnName = "id")
-    private Avatar deanAvatar;
 
     public Faculty() {
     }
 
     public Faculty(Long id, String name, String color) {
         this.id = id;
+        this.name = name;
+        this.color = color;
+    }
+
+    public Faculty(String name, String color) {
         this.name = name;
         this.color = color;
     }
@@ -49,6 +44,9 @@ public class Faculty {
     }
 
     public void setName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Название факультета не может быть пустым");
+        }
         this.name = name;
     }
 
@@ -57,23 +55,10 @@ public class Faculty {
     }
 
     public void setColor(String color) {
+        if (color == null || color.trim().isEmpty()) {
+            throw new IllegalArgumentException("Цвет факультета не может быть пустым");
+        }
         this.color = color;
-    }
-
-    public List<Student> getStudents() {
-        return students;
-    }
-
-    public void setStudents(List<Student> students) {
-        this.students = students;
-    }
-
-    public Avatar getDeanAvatar() {
-        return deanAvatar;
-    }
-
-    public void setDeanAvatar(Avatar deanAvatar) {
-        this.deanAvatar = deanAvatar;
     }
 
     @Override

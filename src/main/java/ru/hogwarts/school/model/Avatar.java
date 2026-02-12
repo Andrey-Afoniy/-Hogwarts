@@ -2,7 +2,6 @@ package ru.hogwarts.school.model;
 
 import javax.persistence.*;
 import java.util.Arrays;
-import java.util.Objects;
 
 @Entity
 @Table(name = "avatars")
@@ -33,6 +32,12 @@ public class Avatar {
 
     public Avatar(Long id, String filePath, Long fileSize, String mediaType) {
         this.id = id;
+        this.filePath = filePath;
+        this.fileSize = fileSize;
+        this.mediaType = mediaType;
+    }
+
+    public Avatar(String filePath, Long fileSize, String mediaType) {
         this.filePath = filePath;
         this.fileSize = fileSize;
         this.mediaType = mediaType;
@@ -87,28 +92,12 @@ public class Avatar {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Avatar avatar = (Avatar) o;
-        return Objects.equals(id, avatar.id) && Objects.equals(filePath, avatar.filePath) && Objects.equals(fileSize, avatar.fileSize) && Objects.equals(mediaType, avatar.mediaType) && Arrays.equals(preview, avatar.preview);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hash(id, filePath, fileSize, mediaType);
-        result = 31 * result + Arrays.hashCode(preview);
-        return result;
-    }
-
-    @Override
     public String toString() {
         return "Avatar{" +
                 "id=" + id +
                 ", filePath='" + filePath + '\'' +
                 ", fileSize=" + fileSize +
                 ", mediaType='" + mediaType + '\'' +
-                ", preview=" + (preview != null ? preview.length + " bytes" : "null") +
                 '}';
     }
 }

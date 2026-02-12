@@ -1,20 +1,20 @@
 package ru.hogwarts.school.model;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
-@Table(name = "students")
+@Table(name = "students",
+        uniqueConstraints = @UniqueConstraint(columnNames = "name"))
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @Column(name = "age", nullable = false)
-    private int age;
+    private int age = 20;  // Значение по умолчанию
 
     @Column(name = "email", unique = true)
     private String email;
@@ -26,16 +26,21 @@ public class Student {
     public Student() {
     }
 
+    public Student(String name, int age) {
+        this.name = name;
+        setAge(age);
+    }
+
     public Student(Long id, String name, int age) {
         this.id = id;
         this.name = name;
-        this.age = age;
+        setAge(age);
     }
 
     public Student(Long id, String name, int age, String email) {
         this.id = id;
         this.name = name;
-        this.age = age;
+        setAge(age);
         this.email = email;
     }
 
@@ -52,6 +57,9 @@ public class Student {
     }
 
     public void setName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Имя не может быть пустым");
+        }
         this.name = name;
     }
 
@@ -60,6 +68,9 @@ public class Student {
     }
 
     public void setAge(int age) {
+        if (age < 16) {
+            throw new IllegalArgumentException("Возраст не может быть меньше 16 лет");
+        }
         this.age = age;
     }
 
@@ -77,19 +88,6 @@ public class Student {
 
     public void setFaculty(Faculty faculty) {
         this.faculty = faculty;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Student student = (Student) o;
-        return age == student.age && Objects.equals(id, student.id) && Objects.equals(name, student.name) && Objects.equals(email, student.email);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, age, email);
     }
 
     @Override
