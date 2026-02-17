@@ -4,8 +4,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "faculties",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"name", "color"}))
+@Table(name = "faculties")
 public class Faculty {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,10 +1,10 @@
 package ru.hogwarts.school.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
-@Table(name = "students",
-        uniqueConstraints = @UniqueConstraint(columnNames = "name"))
+@Table(name = "students")
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,7 +14,7 @@ public class Student {
     private String name;
 
     @Column(name = "age", nullable = false)
-    private int age = 20;  // Значение по умолчанию
+    private int age = 20;
 
     @Column(name = "email", unique = true)
     private String email;
@@ -24,11 +24,6 @@ public class Student {
     private Faculty faculty;
 
     public Student() {
-    }
-
-    public Student(String name, int age) {
-        this.name = name;
-        setAge(age);
     }
 
     public Student(Long id, String name, int age) {
@@ -42,6 +37,11 @@ public class Student {
         this.name = name;
         setAge(age);
         this.email = email;
+    }
+
+    public Student(String name, int age) {
+        this.name = name;
+        setAge(age);
     }
 
     public Long getId() {
@@ -88,6 +88,22 @@ public class Student {
 
     public void setFaculty(Faculty faculty) {
         this.faculty = faculty;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Student student = (Student) o;
+        return age == student.age &&
+                Objects.equals(id, student.id) &&
+                Objects.equals(name, student.name) &&
+                Objects.equals(email, student.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, age, email);
     }
 
     @Override
