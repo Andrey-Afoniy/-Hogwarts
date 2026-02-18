@@ -25,6 +25,10 @@ public class Faculty {
         this.color = color;
     }
 
+    public Faculty(String name, String color) {
+        this.name = name;
+        this.color = color;
+    }
 
     public Long getId() {
         return id;
@@ -39,6 +43,9 @@ public class Faculty {
     }
 
     public void setName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Название факультета не может быть пустым");
+        }
         this.name = name;
     }
 
@@ -47,6 +54,9 @@ public class Faculty {
     }
 
     public void setColor(String color) {
+        if (color == null || color.trim().isEmpty()) {
+            throw new IllegalArgumentException("Цвет факультета не может быть пустым");
+        }
         this.color = color;
     }
 
@@ -55,7 +65,9 @@ public class Faculty {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Faculty faculty = (Faculty) o;
-        return Objects.equals(id, faculty.id) && Objects.equals(name, faculty.name) && Objects.equals(color, faculty.color);
+        return Objects.equals(id, faculty.id) &&
+                Objects.equals(name, faculty.name) &&
+                Objects.equals(color, faculty.color);
     }
 
     @Override

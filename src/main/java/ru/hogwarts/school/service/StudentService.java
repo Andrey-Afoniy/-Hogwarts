@@ -5,11 +5,12 @@ import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class StudentService {
+
     private final StudentRepository studentRepository;
 
     @Autowired
@@ -18,17 +19,21 @@ public class StudentService {
     }
 
     public Student createStudent(Student student) {
+        if (student.getEmail() != null && !student.getEmail().isEmpty()) {
+            Student existingStudent = studentRepository.findByEmail(student.getEmail());
+            if (existingStudent != null) {
+                throw new IllegalArgumentException("Студент с email " + student.getEmail() + " уже существует");
+            }
+        }
         return studentRepository.save(student);
     }
 
-    public Student getStudentById(Long id) {
-        Optional<Student> student = studentRepository.findById(id);
-        return student.orElse(null);
+    public Student findStudent(Long id) {
+        return studentRepository.findById(id).orElse(null);
     }
 
     public Student updateStudent(Long id, Student student) {
-        Optional<Student> existingStudent = studentRepository.findById(id);
-        if (existingStudent.isPresent()) {
+        if (studentRepository.existsById(id)) {
             student.setId(id);
             return studentRepository.save(student);
         }
@@ -36,28 +41,50 @@ public class StudentService {
     }
 
     public Student deleteStudent(Long id) {
-        Optional<Student> student = studentRepository.findById(id);
-        if (student.isPresent()) {
+        Student student = findStudent(id);
+        if (student != null) {
             studentRepository.deleteById(id);
-            return student.get();
         }
-        return null;
+        return student;
     }
 
-    public List<Student> getAllStudents() {
+    public Collection<Student> getAllStudents() {
         return studentRepository.findAll();
     }
 
-    public List<Student> getStudentsByAge(int age) {
+    public Collection<Student> findStudentsByAge(int age) {
         return studentRepository.findByAge(age);
     }
 
-    // Дополнительные методы
-    public List<Student> getStudentsByAgeBetween(int minAge, int maxAge) {
+    public Collection<Student> findStudentsByAgeBetween(int minAge, int maxAge) {
         return studentRepository.findByAgeBetween(minAge, maxAge);
     }
 
-    public List<Student> getStudentsByName(String name) {
-        return studentRepository.findByNameContainingIgnoreCase(name);
+    public Collection<Student> findStudentsByFaculty(Long facultyId) {
+        return studentRepository.findByFacultyId(facultyId);
+    }
+
+    public List<Student> getLastFiveStudents() {
+        return studentRepository.findLastFiveStudents();
+    }
+
+
+    public Long countAllStudents() {
+        Long count = studentRepository.countAllStudents();
+        return count != null ? count : 0L;
+    }
+
+    public Double getAverageAge() {
+        Double averageAge = studentRepository.findAverageAge();
+        return averageAge != null ? averageAge : 0.0;
+    }
+
+    public Long countStudentsByFaculty(Long facultyId) {
+        Long count = studentRepository.countStudentsByFacultyId(facultyId);
+        return count != null ? count : 0L;
+    }
+
+    public List<Student> getStudentsOlderThan(int age) {
+        return studentRepository.findStudentsOlderThan(age);
     }
 }

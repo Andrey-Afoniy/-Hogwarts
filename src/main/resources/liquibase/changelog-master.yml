@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - include:
+      file: liquibase/changesets/01-create-tables.sql
+      relativeToChangelogFile: false
+  - include:
+      file: liquibase/changesets/02-add-constraints.sql
+      relativeToChangelogFile: false
+  - include:
+      file: liquibase/changesets/03-add-student-name-index.sql
+      relativeToChangelogFile: false
+  - include:
+      file: liquibase/changesets/04-add-faculty-name-color-index.sql
+      relativeToChangelogFile: false
