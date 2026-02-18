@@ -16,6 +16,8 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     Collection<Student> findByFacultyId(Long facultyId);
 
+    Student findByEmail(String email);
+
     @Query("SELECT COUNT(s) FROM Student s")
     Long countAllStudents();
 
@@ -30,6 +32,4 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     @Query("SELECT COUNT(s) FROM Student s WHERE s.faculty.id = :facultyId")
     Long countStudentsByFacultyId(@Param("facultyId") Long facultyId);
-
-    Student findByEmail(String email);
 }
