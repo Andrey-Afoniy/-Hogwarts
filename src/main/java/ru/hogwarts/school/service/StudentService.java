@@ -10,6 +10,7 @@ import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -27,9 +28,7 @@ public class StudentService {
 
     public Student createStudent(Student student) {
         logger.info("Was invoked method for create student with name: {}", student.getName());
-        logger.debug("Student details: {}", student);
 
-        // Проверка на уникальность email
         if (student.getEmail() != null && !student.getEmail().isEmpty()) {
             Student existingStudent = studentRepository.findByEmail(student.getEmail());
             if (existingStudent != null) {
@@ -74,7 +73,6 @@ public class StudentService {
             student.setId(id);
             Student updatedStudent = studentRepository.save(student);
             logger.info("Student with id {} updated successfully", id);
-            logger.debug("Updated student: {}", updatedStudent);
             return updatedStudent;
         } catch (Exception e) {
             logger.error("Error updating student with id {}: {}", id, e.getMessage());
@@ -168,5 +166,33 @@ public class StudentService {
         List<Student> students = studentRepository.findStudentsOlderThan(age);
         logger.debug("Found {} students older than {}", students.size(), age);
         return students;
+    }
+
+    // Шаг 1: Имена студентов на букву А
+    public List<String> getStudentNamesStartingWithA() {
+        logger.info("Was invoked method for get student names starting with A");
+
+        List<String> names = studentRepository.findAll().stream()
+                .map(Student::getName)
+                .filter(name -> name != null && name.toUpperCase().startsWith("A"))
+                .map(String::toUpperCase)
+                .sorted()
+                .collect(Collectors.toList());
+
+        logger.debug("Found {} students with names starting with A", names.size());
+        return names;
+    }
+
+    // Шаг 2: Средний возраст всех студентов (через findAll)
+    public Double getAverageAgeOfAllStudents() {
+        logger.info("Was invoked method for get average age of all students using findAll");
+
+        double averageAge = studentRepository.findAll().stream()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElse(0.0);
+
+        logger.info("Average age of all students (using findAll): {}", averageAge);
+        return averageAge;
     }
 }
