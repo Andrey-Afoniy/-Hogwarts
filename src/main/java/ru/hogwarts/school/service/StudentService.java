@@ -168,7 +168,6 @@ public class StudentService {
         return students;
     }
 
-    // Шаг 1: Имена студентов на букву А
     public List<String> getStudentNamesStartingWithA() {
         logger.info("Was invoked method for get student names starting with A");
 
@@ -183,7 +182,6 @@ public class StudentService {
         return names;
     }
 
-    // Шаг 2: Средний возраст всех студентов (через findAll)
     public Double getAverageAgeOfAllStudents() {
         logger.info("Was invoked method for get average age of all students using findAll");
 
@@ -194,5 +192,17 @@ public class StudentService {
 
         logger.info("Average age of all students (using findAll): {}", averageAge);
         return averageAge;
+    }
+
+    public List<String> getFirstSixStudentNames() {
+        logger.info("Was invoked method for get first six student names");
+
+        List<String> names = studentRepository.findAll().stream()
+                .map(Student::getName)
+                .limit(6)
+                .collect(Collectors.toList());
+
+        logger.debug("Retrieved {} student names", names.size());
+        return names;
     }
 }
