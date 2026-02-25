@@ -9,6 +9,7 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.Collection;
+import java.util.Comparator;
 
 @Service
 @Transactional
@@ -26,7 +27,6 @@ public class FacultyService {
 
     public Faculty createFaculty(Faculty faculty) {
         logger.info("Was invoked method for create faculty with name: {}", faculty.getName());
-        logger.debug("Faculty details: {}", faculty);
 
         try {
             Faculty savedFaculty = facultyRepository.save(faculty);
@@ -64,7 +64,6 @@ public class FacultyService {
             faculty.setId(id);
             Faculty updatedFaculty = facultyRepository.save(faculty);
             logger.info("Faculty with id {} updated successfully", id);
-            logger.debug("Updated faculty: {}", updatedFaculty);
             return updatedFaculty;
         } catch (Exception e) {
             logger.error("Error updating faculty with id {}: {}", id, e.getMessage());
@@ -110,5 +109,17 @@ public class FacultyService {
         Collection<Faculty> faculties = facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(name, color);
         logger.debug("Found {} faculties", faculties.size());
         return faculties;
+    }
+
+    public String getLongestFacultyName() {
+        logger.info("Was invoked method for get longest faculty name");
+
+        String longestName = facultyRepository.findAll().stream()
+                .map(Faculty::getName)
+                .max(Comparator.comparingInt(String::length))
+                .orElse("No faculties found");
+
+        logger.info("Longest faculty name: {} (length: {})", longestName, longestName.length());
+        return longestName;
     }
 }

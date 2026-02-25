@@ -1,6 +1,5 @@
 package ru.hogwarts.school.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Student;
@@ -23,9 +22,9 @@ public class StudentController {
     public ResponseEntity<Student> createStudent(@RequestBody Student student) {
         try {
             Student createdStudent = studentService.createStudent(student);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdStudent);
+            return ResponseEntity.ok(createdStudent);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -33,7 +32,7 @@ public class StudentController {
     public ResponseEntity<Student> getStudent(@PathVariable Long id) {
         Student student = studentService.findStudent(id);
         if (student == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(student);
     }
@@ -42,7 +41,7 @@ public class StudentController {
     public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody Student student) {
         Student updatedStudent = studentService.updateStudent(id, student);
         if (updatedStudent == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(updatedStudent);
     }
@@ -51,9 +50,9 @@ public class StudentController {
     public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
         Student deletedStudent = studentService.deleteStudent(id);
         if (deletedStudent == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping
@@ -109,5 +108,17 @@ public class StudentController {
     public ResponseEntity<List<Student>> getStudentsOlderThan(@PathVariable int age) {
         List<Student> students = studentService.getStudentsOlderThan(age);
         return ResponseEntity.ok(students);
+    }
+
+    @GetMapping("/names-starting-with-a")
+    public ResponseEntity<List<String>> getStudentNamesStartingWithA() {
+        List<String> names = studentService.getStudentNamesStartingWithA();
+        return ResponseEntity.ok(names);
+    }
+
+    @GetMapping("/average-age-all")
+    public ResponseEntity<Double> getAverageAgeOfAllStudents() {
+        Double averageAge = studentService.getAverageAgeOfAllStudents();
+        return ResponseEntity.ok(averageAge);
     }
 }
